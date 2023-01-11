@@ -4,10 +4,10 @@
 #include <Servo.h>
 #include <Smoothed.h>
 
-const int iteration = 4;     //numero iterazioni per ciclo (min 4);
+const int iteration = 4;     //numero iterazioni per ciclo (preferibilmente multipli di 4);
 const int cicle = 5;          //numero cicli
 const int passo = 10;         //numero gradi utilizzati come singolo passo per il movimento dei servo 
-const int interval = 20000;   // intervallo temporale tra i cicli in ms
+const int interval = 20000;   //intervallo temporale tra i cicli in ms
 
 Servo base;
 Servo arm;
@@ -113,7 +113,7 @@ void optimize(){
     actualVoltage = prevVoltage;
     changeDirection();
   }
-  if(count_iteration < iteration){            //se ho trovato un target ammissible avvio il movimento
+  if(count_iteration < iteration){     //se ho ancora delle direzioni da ottimizzare avvio il movimento
     updateTarget();
     baseOnTarget = false;
     armOnTarget = false;
