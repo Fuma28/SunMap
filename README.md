@@ -15,4 +15,4 @@ il dispositivo consulta i dati salvati e restituisce la configurazione ideale. L
 ![scheme](img/schema_sunmap.JPG)
 
 ## Realizzazione
-![photo](img/foto.JPG)
+![photo](img/foto.jpg)
