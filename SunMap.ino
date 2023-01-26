@@ -4,10 +4,11 @@
 #include <Servo.h>
 #include <Smoothed.h>
 
-const int iteration = 4;     //numero iterazioni per ciclo (preferibilmente multipli di 4);
-const int cicle = 5;          //numero cicli
-const int passo = 10;         //numero gradi utilizzati come singolo passo per il movimento dei servo 
-const int interval = 20000;   //intervallo temporale tra i cicli in ms
+#define MAX_ITERATION 4     //numero iterazioni per ciclo (preferibilmente multipli di 4);
+#define MAX_CICLE 5         //numero cicli
+#define STEP 10         //numero gradi utilizzati come singolo passo per il movimento dei servo 
+#define INTERVAL 20000   //intervallo temporale tra i cicli in ms
+#define PANEL A0        //pin al quale è collegato il pannelo solare
 
 Servo base;
 Servo arm;
@@ -88,7 +89,7 @@ void readVoltage() {
   if(readVoltageTask.isFirstIteration()){
     smooth_exp.clear();
   }
-  int value = analogRead(A0);
+  int value = analogRead(PANEL);
   //Serial.println(value);
   smooth_exp.add(value);
   if(readVoltageTask.isLastIteration()){
@@ -113,7 +114,7 @@ void optimize(){
     actualVoltage = prevVoltage;
     changeDirection();
   }
-  if(count_iteration < iteration){     //se ho ancora delle direzioni da ottimizzare avvio il movimento
+  if(count_iteration < MAX_ITERATION){     //se ho ancora delle direzioni da ottimizzare avvio il movimento
     updateTarget();
     baseOnTarget = false;
     armOnTarget = false;
@@ -131,14 +132,13 @@ void optimize(){
     Serial.println(actualVoltage);
     voltage_sum += actualVoltage;
     Serial.println();
-    Serial.println(voltage_sum);
     count_iteration = 0;
     count_cicle++;
     actualVoltage = 0;
     prevVoltage = 0;
-    if(count_cicle < cicle){
-      moveBaseTask.enableDelayed(interval);
-      moveArmTask.enableDelayed(interval);
+    if(count_cicle < MAX_CICLE){
+      moveBaseTask.enableDelayed(INTERVAL);
+      moveArmTask.enableDelayed(INTERVAL);
     }
     else{
       Serial.println("Posizione ottimale assoluta calcolata");
@@ -171,11 +171,11 @@ void loop() {
 }
 
 void revertTarget(){
-  target[actualTarget] = (target[actualTarget] - passo * actualDirection + 190) % 190;
+  target[actualTarget] = (target[actualTarget] - STEP * actualDirection + 180 + STEP) % (180 + STEP);
 }
 
 void updateTarget(){
-  target[actualTarget] = (target[actualTarget] + passo * actualDirection + 190) % 190;
+  target[actualTarget] = (target[actualTarget] + STEP * actualDirection + 180 + STEP) % (180 + STEP);
 }
 
 void changeDirection(){
